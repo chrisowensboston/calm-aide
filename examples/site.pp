@@ -1,5 +1,5 @@
 node default {
-  class { 'aide':
+  class { '::aide':
     email  => 'root@localhost',
     hour   => 3,
     minute => 0,

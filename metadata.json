@@ -1,13 +1,10 @@
 {
-  "name": "lhinds-aide",
-  "version": "1.0.3",
-  "author": "Luke Hinds",
-  "summary": "Install and manage AIDE rules, init Database and create cron job",
+  "name": "calm-aide",
+  "version": "1.1.0",
+  "author": "CALM",
+  "summary": "Install and manage AIDE package, init Database and create cron job",
   "license": "Apache-2.0",
-  "source": "https://github.com/lukehinds/puppet-aide",
-  "project_page": "https://github.com/lukehinds/puppet-aide",
-  "issues_url": "https://github.com/lukehinds/puppet-aide/issues",
-  "tags": ["aide", "audit", "auditing", "file integrity", "ids"],
+  "source": "",
   "operatingsystem_support": [
     {
     "operatingsystem": "RedHat",

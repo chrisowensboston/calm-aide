@@ -1,81 +1,43 @@
 # Class: aide
 # ===========================
 #
-# Full description of class aide here.
-#
-# Parameters
-# ----------
-#
-# Document parameters here.
-#
-# * `sample parameter`
-# Explanation of what this parameter affects and what it defaults to.
-# e.g. "Specify one or more upstream ntp servers as an array."
-#
-# Variables
-# ----------
-#
-# Here you should define a list of variables that this module would require.
-#
-# * `sample variable`
-#  Explanation of how this variable affects the function of this class and if
-#  it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#  External Node Classifier as a comma separated list of hostnames." (Note,
-#  global variables should be avoided in favor of class parameters as
-#  of Puppet 2.6.)
-#
-# Examples
-# --------
-#
-# @example
-#    class { 'aide':
-#      servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#    }
-#
-# Authors
-# -------
-#
-# Luke Hinds <lhinds@protonmail.com>
-#
-# Copyright
-# ---------
-#
-# Copyright 2017 Luke Hinds
-#
 class aide (
-  $package                = $::aide::params::package,
-  $hour                   = $aide::params::hour,
-  $minute               = $aide::params::minute,
-  $email                  = $aide::params::email,
-  $rules                   = {},
-) inherits aide::params {
+  String $package              = 'aide',
+  String $package_version      = 'latest',
+  Integer[0,23] $hour          = 1,
+  Integer[0,59] $minute        = 0,
+  String $email                = 'root@localhost',
+  Stdlib::Absolutepath $db_dir = '/var/lib/aide',
+) {
 
-  package { 'aide':
-      ensure => $::aide::version,
-      name   => $package,
-      alias  => 'aide',
+  case $::osfamily {
+    'Debian': {
+      $aide_path = '/usr/bin/aide'
+      $conf_dir = '/etc/aide'
+      $mail_path = '/usr/bin/mail'
+    }
+    'Redhat': {
+      $aide_path = '/usr/sbin/aide'
+      $conf_dir = '/etc'
+      $mail_path = '/bin/mail'
+    }
+    default: {
+      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+    }
   }
 
-  contain 'aide::installdb'
+  $db_path      = "${db_dir}/aide.db"
+  $db_temp_path = "${db_dir}/aide.db.new"
+  $conf_path    = "${conf_dir}/aide.conf"
 
-  concat { 'aide.conf':
-    path           => $::aide::conf_path,
-    owner          => 'root',
-    group          => 'root',
-    mode           => '0600',
-    ensure_newline => true,
-    require        => Package['aide']
-  }
+  contain '::aide::install'
+  contain '::aide::config'
+  contain '::aide::installdb'
+  contain '::aide::cron'
 
-  concat::fragment { 'aide.conf.header':
-    target  => 'aide.conf',
-    order   => 0,
-    content => template( 'aide/aide.conf.erb')
-  }
+  Class[::aide::install] ->
+  Class[::aide::config] ~>
+  Class[::aide::installdb] ->
+  Class[::aide::cron]
 
-# If a hash of rules is supplied with class then call auditd::rules
-  if $rules {
-    create_resources('::aide::rule', $rules)
-  }
-  contain 'aide::cron'
 }
