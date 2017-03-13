@@ -3,7 +3,7 @@
 #
 class aide (
   String $package              = 'aide',
-  String $package_version      = 'latest',
+  String $package_ensure      = 'latest',
   Integer[0,23] $hour          = 1,
   Integer[0,59] $minute        = 0,
   String $email                = 'root@localhost',
