@@ -1,0 +1,11 @@
+#!/bin/sh
+
+RUNDATE = `date +%Y-%m-%d`
+RUNFILENAME = "Aide-"$RUNDATE.txt
+/bin/echo "Aide check on $HOSTNAME  $RUNDATE " > /tmp/$RUNFILENAME
+<%= @aide_path %> --check > /tmp/Aide.txt
+/bin/cat /tmp/Aide.txt|/bin/grep -v failed >> /tmp/$RUNFILENAME
+/bin/echo "**************************************" >> /tmp/$RUNFILENAME
+/usr/bin/tail -20 /tmp/myAide.txt >> /tmp/$RUNFILENAME
+/bin/echo "****************DONE******************" >> /tmp/$RUNFILENAME
+/bin/mail -s"$RUNFILENAME $RUNDATE" <%= @mailto %>  < /tmp/$RUNFILENAME
