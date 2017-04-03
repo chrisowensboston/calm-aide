@@ -8,6 +8,7 @@ class aide (
   Integer[0,59] $minute        = 0,
   String $email                = 'root@localhost',
   Stdlib::Absolutepath $db_dir = '/var/lib/aide',
+  Stdlib::Absolutepath $log_dir = '/var/log/aide',
 ) {
 
   case $::osfamily {
@@ -26,8 +27,8 @@ class aide (
     }
   }
 
-  $db_path      = "${db_dir}/aide.db"
-  $db_temp_path = "${db_dir}/aide.db.new"
+  $db_path      = "${db_dir}/aide.db.gz"
+  $db_new_path  = "${db_dir}/aide.db.new.gz"
   $conf_path    = "${conf_dir}/aide.conf"
 
   contain '::aide::install'

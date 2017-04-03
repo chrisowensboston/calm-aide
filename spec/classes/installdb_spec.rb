@@ -25,13 +25,14 @@ describe 'aide::installdb', type: 'class' do
                })
       end
       it do
-        is_expected.to contain_file('/var/lib/aide/aide.db').
+        is_expected.to contain_file('/var/lib/aide/aide.db.gz').
           with_ensure('file').
           with_backup('.bak').
           with_owner('root').
           with_group('root').
           with_mode('0400').
-          with_source('file:/var/lib/aide/aide.db.new')
+          with_source('file:/var/lib/aide/aide.db.new.gz').
+          that_subscribes_to('Exec[aide_init]')
       end
     end
   end

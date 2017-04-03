@@ -17,7 +17,7 @@ class aide::installdb {
     owner     => 'root',
     group     => 'root',
     mode      => '0400',
-    source    => "file:${::aide::db_temp_path}",
+    source    => "file:${::aide::db_new_path}",
     subscribe => Exec['aide_init'],
     }
 }

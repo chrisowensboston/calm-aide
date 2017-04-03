@@ -23,7 +23,7 @@ describe 'aide::config', type: 'class' do
           with_group('root').
           with_mode('0600').
           with_replace('false').
-          with_source('puppet:///modules/aide/aide.conf')
+          with_content(/database=file: \/var\/lib\/aide\/aide\.db\.gz/)
       end
       it do
         is_expected.to contain_file("#{conf_dir}/aide_check.sh").
@@ -33,6 +33,16 @@ describe 'aide::config', type: 'class' do
           with_mode('0500').
           with_content(/#{aide_path} \-\-check/).
           with_content(/root@localhost/)
+      end
+      it do
+        is_expected.to contain_file('/var/log/aide').
+          with_ensure('directory').
+          with_path('/var/log/aide').
+          with_recurse(false).
+          with_purge(false).
+          with_owner('root').
+          with_group('root').
+          with_mode('0700')
       end
     end
   end

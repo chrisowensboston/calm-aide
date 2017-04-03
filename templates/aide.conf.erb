@@ -1,15 +1,13 @@
 # Example configuration file for AIDE.
 
-@@define DBDIR /var/lib/aide
-@@define LOGDIR /var/log/aide
 
 # The location of the database to be read.
-database=file:@@{DBDIR}/aide.db.gz
+database=file: <%= @db_path %>
 
 # The location of the database to be written.
 #database_out=sql:host:port:database:login_name:passwd:table
 #database_out=file:aide.db.new
-database_out=file:@@{DBDIR}/aide.db.new.gz
+database_out=file: <%= @db_new_path %>
 
 # Whether to gzip the output to database
 gzip_dbout=yes
@@ -17,7 +15,7 @@ gzip_dbout=yes
 # Default.
 verbose=5
 
-report_url=file:@@{LOGDIR}/aide.log
+report_url=file:<%= @log_path %>
 report_url=stdout
 #report_url=stderr
 #NOT IMPLEMENTED report_url=mailto:root@foo.com
